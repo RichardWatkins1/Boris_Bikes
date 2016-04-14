@@ -3,8 +3,8 @@ require 'DockingStation'
 require 'bike'
 
 describe DockingStation do
-    let(:bike) { Bike.new}
-    let(:broken_bike) { Bike.new.report_broken}
+    let(:bike) { double(:bike)}
+    let(:broken_bike) { double(:broken_bike).report_broken}
     it 'responds to release_bike' do
         expect(DockingStation.new).to respond_to 'release_bike'
     end
@@ -36,8 +36,8 @@ describe DockingStation do
 
     describe '#dock' do
         it 'raises an error when exceding DEFAULT_CAPACITY' do
-          subject.capacity.times { subject.dock Bike.new }
-          expect { subject.dock Bike.new }.to raise_error 'Dock already full'
+          subject.capacity.times { subject.dock bike }
+          expect { subject.dock bike }.to raise_error 'Dock already full'
         end
 
         it 'test docks a broken_bike' do
