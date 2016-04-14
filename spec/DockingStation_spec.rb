@@ -3,27 +3,26 @@ require 'DockingStation'
 require 'bike'
 
 describe DockingStation do
+    let(:bike) { Bike.new}
+    let(:broken_bike) { Bike.new.report_broken}
     it 'responds to release_bike' do
         expect(DockingStation.new).to respond_to 'release_bike'
     end
     
     
-    it 'expects working to return true' do
-        bike = Bike.new
+    it 'releases working bikes' do
         subject.dock(bike)
-        expect(subject.release_bike).to be_working
-    
+        b = subject.release_bike
+        expect(b).not_to be_broken    
     end
 
 
     it 'expects a bike to be docked' do
-       bikes = Bike.new
-	     expect(DockingStation.new.dock(bikes)).to eq [bikes]
+	     expect(DockingStation.new.dock(bike)).to eq [bike]
     end
 
 
    it 'contains bike' do
-	     bike = Bike.new
 	     subject.dock(bike)
 	     expect(subject.bikes).to include bike
    end
@@ -52,6 +51,10 @@ describe DockingStation do
       expect(ds.capacity).to eq 8
     end
 
+    it 'Does not releases broken bikes' do 
+      subject.dock(broken_bike)
+      expect{subject.release_bike}.to raise_error 'no working bikes available'
+    end
 
 
 end
