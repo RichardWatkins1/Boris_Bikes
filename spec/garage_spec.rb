@@ -3,21 +3,12 @@ require 'garage'
 
 require 'bike'
 
-describe DockingStation do
-    let(:bike) { double(:bike)}
-    let(:broken_bike) { double(:broken_bike, report_broken: true, broken?: true) }
+describe Garage do
+    let(:bike) { double(:bike, report_broken: false, broken?: false, report_fixed: true) }
+    let(:broken_bike) { double(:broken_bike, report_broken: true, broken?: true, report_fixed: false) }
     it 'responds to release_bike' do
         expect(Garage.new).to respond_to 'release_bike_to_van'
     end
-    
-    
-    it 'releases working bikes' do
-        allow(bike).to receive(:broken?).and_return(false)
-        subject.dock(bike)
-        b = subject.release_bike
-        expect(b).not_to be_broken    
-    end
-
 
     it 'expects a bike to be docked' do
 	     expect(Garage.new.dock_to_garage(bike)).to include bike
@@ -25,8 +16,8 @@ describe DockingStation do
 
 
    it 'contains bike' do
-	     subject.dock(bike)
-	     expect(subject.bikes).to include bike
+	     subject.dock_to_garage(broken_bike)
+	     expect(subject.broken_bikes).to include broken_bike
    end
 
 
@@ -38,13 +29,13 @@ describe DockingStation do
 
     describe '#dock' do
         it 'raises an error when exceding DEFAULT_CAPACITY' do
-          subject.capacity.times { subject.dock bike }
-          expect { subject.dock bike }.to raise_error 'Dock already full'
+          subject.capacity.times { subject.dock_to_garage broken_bike }
+          expect { subject.dock_to_garage broken_bike }.to raise_error 'Dock already full'
         end
 
         it 'test docks a broken_bike' do
-          subject.dock(broken_bike)
-          expect(subject.dock(broken_bike)).to include broken_bike
+          subject.dock_to_garage(broken_bike)
+          expect(subject.dock_to_garage(broken_bike)).to include broken_bike
         end
 
     end
@@ -60,14 +51,11 @@ describe DockingStation do
     end
 
     it 'Does not releases broken bikes' do 
-      subject.dock(broken_bike)
-      expect{subject.release_bike}.to raise_error 'no working bikes available'
+      subject.dock_to_garage(broken_bike)
+      array = [broken_bike]
+      subject.fix_bike(array)
+      expect{subject.release_bike_to_van}.to raise_error 'no working bikes available'
     end
-
-    it 'collects all the borken bikes' do
-      expect(subject).to respond_to :sort_broken_bikes
-    end
-
 
 
 end

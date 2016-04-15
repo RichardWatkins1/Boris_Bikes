@@ -4,7 +4,7 @@ require_relative 'bike'
 
 class Garage
     
-    attr_reader :capacity, :bikes
+    attr_reader :capacity, :bikes, :broken_bikes
     
     DEFAULT_CAPACITY = 20
     
@@ -12,17 +12,18 @@ class Garage
     def initialize(capacity = DEFAULT_CAPACITY)
         @capacity = capacity
         @bikes = []
-        @bike_broken = []
+        @broken_bikes = []
     end
     
      def dock_to_garage(bike)
         fail "Dock already full" if full?
-        @bike_broken << bike
+        @broken_bikes << bike
     end
 
      def fix_bike(bikes)
-    	@bikes = @bike_broken.each {|bike| bike.report_fixed}
-    	@bike_broken = []
+    	array = bikes.each {|bike| bike.report_fixed}
+    	@broken_bikes = []
+    	@bikes = array
     end
 
     def release_bike_to_van
@@ -35,7 +36,7 @@ class Garage
     
     
     def full?
-        @bikes.count >= capacity
+        @broken_bikes.count >= capacity
     end
     
     def empty?
