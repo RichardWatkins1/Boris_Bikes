@@ -19,7 +19,7 @@ describe DockingStation do
 
 
     it 'expects a bike to be docked' do
-	     expect(DockingStation.new.dock(bike)).to eq [bike]
+	     expect(DockingStation.new.dock(bike)).to include bike
     end
 
 
@@ -61,6 +61,10 @@ describe DockingStation do
     it 'Does not releases broken bikes' do 
       subject.dock(broken_bike)
       expect{subject.release_bike}.to raise_error 'no working bikes available'
+    end
+
+    it 'collects all the borken bikes' do
+      expect(subject).to respond_to :sort_broken_bikes
     end
 
 

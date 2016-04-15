@@ -1,5 +1,6 @@
 require_relative 'bike'
 
+require_relative 'van'
 
 class DockingStation
     
@@ -11,12 +12,17 @@ class DockingStation
     def initialize(capacity = DEFAULT_CAPACITY)
         @capacity = capacity
         @bikes = []
+        @bike_broken = []
     end
     
     def release_bike
         fail 'No bikes available' if empty?
         fail 'no working bikes available' if @bikes.last.broken?
         @bikes.pop
+    end
+
+    def sort_broken_bikes
+        @bike_broken =  @bikes.select {|bike| bike.broken?}  
     end
     
     def dock(bike)
