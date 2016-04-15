@@ -3,16 +3,37 @@ require_relative 'DockingStation'
 
 class Van
 
-	attr_reader :dockingstation
-	#def initialize(docking_station = DockingStation.new)
-	#@docking_station = docking_station
-	#end
+	DEFAULT_CAPACITY = 5
+
+	attr_reader :dockingstation, :bikes, :capacity
+
+
+    def initialize(capacity = DEFAULT_CAPACITY)
+        @capacity = capacity
+        @bikes = []
+    end
 
 	def station(dockingstation)
 		@dockingstation = dockingstation
 	end
 
 	def collect_broken_bikes
-	 	@dockingstation.sort_broken_bikes
+	 	@bikes = @dockingstation.sort_broken_bikes
 	end
+
+	def van_dock(bike)
+		fail "Dock already full" if full?
+        @bikes << bike
+	end
+
+	private
+    
+    
+    def full?
+        @bikes.count >= capacity
+    end
+    
+    def empty?
+        @bikes.empty?
+    end 
 end
